@@ -42,9 +42,9 @@ for i in xrange(0, len(data_train_doc_id)):
 print TEST
 num_word = len(data_train_word_id)
 for i in xrange(0, len(data_train)):
+    print str(float(i)/len(data_train) * 100) + '% done'
     for j in xrange(1, len(newsgroup_names)+1):
         TEST[j, data_train_doc_id[i]] = TEST[j, data_train_doc_id[i]] + data_train_count[j] * math.log((p_X_giv_Y_prob[j,data_train_word_id[i]])+1)/(num_word + sum(p_X_giv_Y[j, :]))
-        print TEST[j, data_train_doc_id[i]]
-        print j
+
 print TEST
 
