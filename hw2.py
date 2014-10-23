@@ -2,7 +2,6 @@ __author__ = 'andrewa'
 #-*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.linear_model import Ridge
 from time import sleep
 words = open('data/vocabulary.txt', 'r').read().split('\n')
 newsgroup_names = open('data/newsgrouplabels.txt', 'r').read().split('\n')
