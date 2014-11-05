@@ -11,16 +11,18 @@ def logistic(a):
 
 
 def irls(X, y):
+    alpha = 0.001
     theta = np.zeros(X.shape[1])
     theta_ = np.inf
-    while max(abs(theta - theta_)) > 1e-6:
+    #while max(abs(theta - theta_)) > 1e-6:
+    for i in xrange(0, 20):
         a = np.dot(X, theta)
         pi = logistic(a)
         SX = X * (pi - pi*pi).reshape(-1, 1)
-        XSX = np.dot(X.T, SX)
+        XSX = np.dot(X.T, SX) + np.multiply(alpha, np.eye(np.size(theta, 0)))
         SXtheta = np.dot(SX, theta)
         theta_ = theta
-        theta = np.linalg.solve(XSX, np.dot(X.T, SXtheta + y - pi))
+        theta = np.linalg.solve(XSX, np.dot(X.T, SXtheta + y - pi) + alpha * theta)
     return theta
 
 train = np.loadtxt('HW3_data/train.csv', delimiter=',')
@@ -36,7 +38,7 @@ theme_zero = np.size(np.where(train_labels == 0), 0)
 
 
 ###########################################################
-print('IRLS без регуляризации')
+print('IRLS')
 ###########################################################
 
 theta = irls(train, train_labels)
@@ -45,12 +47,12 @@ theta = irls(train, train_labels)
 ###########################################################
 z_test = logistic(test*theta)
 label_test = np.zeros((size_doc_test, 2))
-label_test[:, 1] = test_labels
+label_test[:, 0] = test_labels
 for i in xrange(0, size_doc_test):
         if z_test[i, 0] >= 0.5:
-            label_test[i, 2] = 1
+            label_test[i, 1] = 1
         else:
-            label_test[i, 2] = 0
+            label_test[i, 1] = 0
 answer_test = 0
 for i in label_test:
     if i[0] == i[1]:
@@ -70,7 +72,6 @@ print answer_test, answer_test/size_doc
 ###########################################################
 print('Логистическая регрессия Градиентный спуск без регуляризации')
 ###########################################################
-
 alpha = 0.001
 max_itr = 400
 theta = np.zeros((size_word, 1))
@@ -86,7 +87,7 @@ for count in xrange(0, max_itr):
         if z[i, 0] >= 0.5:
             label[i, 1] = 1
         else:
-            label[i, 0] = 0
+            label[i, 1] = 0
     for i in label:
         if i[0] == i[1]:
             answer[count] += 1
@@ -99,12 +100,12 @@ for count in xrange(0, max_itr):
 
 z_test = logistic(test*theta)
 label_test = np.zeros((size_doc_test, 2))
-label_test[:, 1] = test_labels
+label_test[:, 0] = test_labels
 for i in xrange(0, size_doc_test):
         if z_test[i, 0] >= 0.5:
-            label_test[i, 2] = 1
+            label_test[i, 1] = 1
         else:
-            label_test[i, 2] = 0
+            label_test[i, 1] = 0
 answer_test = 0
 for i in label_test:
     if i[0] == i[1]:
